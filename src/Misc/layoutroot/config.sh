@@ -20,25 +20,29 @@ then
 
     message="Execute sudo ./bin/installdependencies.sh to install any missing Dotnet Core 6.0 dependencies."
 
-    ldd ./bin/libcoreclr.so | grep 'not found'
-    if [ $? -eq 0 ]; then
-        echo "Dependencies is missing for Dotnet Core 6.0"
-        echo $message
-        exit 1
-    fi
+    ARCH=`uname -m`
+    if [ "${ARCH}" != "s390x" -a "${ARCH}" != "ppc64le" ]
+    then
+        ldd ./bin/libcoreclr.so | grep 'not found'
+        if [ $? -eq 0 ]; then
+            echo "Dependencies is missing for Dotnet Core 6.0"
+            echo $message
+            exit 1
+        fi
 
-    ldd ./bin/libSystem.Security.Cryptography.Native.OpenSsl.so | grep 'not found'
-    if [ $? -eq 0 ]; then
-        echo "Dependencies is missing for Dotnet Core 6.0"
-        echo $message
-        exit 1
-    fi
+        ldd ./bin/libSystem.Security.Cryptography.Native.OpenSsl.so | grep 'not found'
+        if [ $? -eq 0 ]; then
+            echo "Dependencies is missing for Dotnet Core 6.0"
+            echo $message
+            exit 1
+        fi
 
-    ldd ./bin/libSystem.IO.Compression.Native.so | grep 'not found'
-    if [ $? -eq 0 ]; then
-        echo "Dependencies is missing for Dotnet Core 6.0"
-        echo $message
-        exit 1
+        ldd ./bin/libSystem.IO.Compression.Native.so | grep 'not found'
+        if [ $? -eq 0 ]; then
+            echo "Dependencies is missing for Dotnet Core 6.0"
+            echo $message
+            exit 1
+        fi
     fi
 
     if ! [ -x "$(command -v ldconfig)" ]; then
